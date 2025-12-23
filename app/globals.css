@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  height: 100%;
+  overscroll-behavior-y: none;
+}
+
+/* El scroller real suele ser el documento */
+html {
+  scroll-snap-type: y mandatory;
+  scroll-snap-stop: always;
+  scroll-behavior: auto; /* importante: auto para snap firme */
+}
+
+::selection {
+  background: rgba(236, 72, 153, 0.35);
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}
+
+
+
+/* Nice scrollbar (desktop) */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.06); }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.28); }
+}
