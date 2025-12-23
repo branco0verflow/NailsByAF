@@ -106,6 +106,8 @@ export function Courses() {
 
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-6 py-14 sm:py-16">
+
+
         {/* Mobile-first: mejor legibilidad + ancho controlado */}
         <div className="max-w-3xl">
           <div
@@ -133,8 +135,7 @@ export function Courses() {
             data-c
             className="mt-4 text-sm sm:text-base leading-relaxed text-white/75 text-balance"
           >
-            Programas cortos, prácticos y orientados a resultados. Consultá disponibilidad y modalidad
-            (presencial / online).
+            Programas cortos, prácticos y orientados a resultados. Modalidad Online. Consultá fecha y disponibilidad.
           </p>
 
           {/* CTAs: full-width en mobile, lado a lado en sm+ */}
@@ -154,7 +155,7 @@ export function Courses() {
         </div>
 
         {/* Cards: 1 columna en mobile, 3 en desktop */}
-        <div className="mt-10 sm:mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mt-10 sm:mt-12 mb-12 max-sm:hidden grid grid-cols-1 gap-4 sm:grid-cols-3">
           {[
             { k: "Nivel Inicial", v: "Bases, preparación, esmaltado y cuidado." },
             { k: "Nail Art", v: "Diseños, líneas finas, efectos y tendencias." },
@@ -172,7 +173,7 @@ export function Courses() {
         </div>
 
         {/* Footer: social icons + copyright */}
-        <footer className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-white/55">
+        <footer className="mt-12  flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-white/55">
           <div>
             © {new Date().getFullYear()} Nails by Anto Figueroa
           </div>

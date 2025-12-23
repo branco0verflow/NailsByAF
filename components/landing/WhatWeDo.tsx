@@ -49,7 +49,7 @@ export function WhatWeDo() {
   }, []);
 
   return (
-    <section ref={rootRef} className="relative w-fullrelative h-[100svh] w-full overflow-hidden">
+    <section ref={rootRef} className=" w-full relative h-[100svh] overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
         <div
@@ -85,34 +85,35 @@ export function WhatWeDo() {
                 Diseño, precisión y estilo en cada detalle.
               </h2>
 
-              
 
-              <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
-                {[
-                  { k: "Turnos coordinados", v: "Gestión ágil y confirmación clara." },
-                  { k: "Diseños a medida", v: "Referencia + asesoría personalizada." },
-                  { k: "Higiene y cuidado", v: "Protocolos y materiales de calidad." },
-                ].map((item) => (
-                  <div
-                    key={item.k}
-                    data-wwd
-                    className="
+
+              <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1 max-sm:hidden">
+  {[
+    { k: "Turnos coordinados", v: "Gestión ágil y confirmación clara." },
+    { k: "Diseños a medida", v: "Referencia + asesoría personalizada." },
+    { k: "Higiene y cuidado", v: "Protocolos y materiales de calidad." },
+  ].map((item) => (
+    <div
+      key={item.k}
+      data-wwd
+      className="
         rounded-xl sm:rounded-[1.3rem]
         border border-white/12
         bg-white/6 backdrop-blur
         px-3 py-3
         sm:px-4 sm:py-5 md:px-4 md:py-5
       "
-                  >
-                    <div className="text-[13px] sm:text-[15px] font-semibold text-white/95 leading-tight">
-                      {item.k}
-                    </div>
-                    <div className="mt-1 text-[12px] sm:text-sm leading-snug sm:leading-relaxed text-white/70">
-                      {item.v}
-                    </div>
-                  </div>
-                ))}
-              </div>
+    >
+      <div className="text-[13px] sm:text-[15px] font-semibold text-white/95 leading-tight">
+        {item.k}
+      </div>
+      <div className="mt-1 text-[12px] sm:text-sm leading-snug sm:leading-relaxed text-white/70">
+        {item.v}
+      </div>
+    </div>
+  ))}
+</div>
+
 
             </div>
 
