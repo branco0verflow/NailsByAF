@@ -77,8 +77,8 @@ export function Hero() {
   }, []);
 
   const typingTexts = useMemo(
-    () => ["Tu turno es un espacio pensado solo para vos.", 
-      "Cada diseño requiere tiempo, precisión y cuidado.", 
+    () => ["Tu turno es un espacio pensado solo para vos.",
+      "Cada diseño requiere tiempo, precisión y cuidado.",
       "Tiempo, técnica y amor en cada detalle. 💕",
       "Nos tomamos el tiempo que tu diseño merece."],
     []
@@ -104,7 +104,10 @@ export function Hero() {
 
         <div className="w-full max-w-lg">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <PremiumButton href="https://wa.me/59891307261">Reservar turno</PremiumButton>
+            <PremiumButton href="/reserva">
+              Reservar turno
+            </PremiumButton>
+
 
             <PremiumButton href="#cursos" variant="secondary">
               Cursos Nail Art

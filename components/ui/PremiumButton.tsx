@@ -2,6 +2,7 @@
 
 import React from "react";
 import { cn } from "./cn";
+import Link from "next/link";
 
 type Props = {
   children: React.ReactNode;
@@ -66,6 +67,8 @@ export function PremiumButton({
 
   const cls = cn(base, variant === "primary" ? primary : secondary, className);
 
+  const isInternal = href?.startsWith("/");
+
   const content = (
     <>
       <span className="relative">{children}</span>
@@ -85,12 +88,27 @@ export function PremiumButton({
   );
 
   if (href) {
+    if (isInternal) {
+      return (
+        <Link href={href} className={cls}>
+          {content}
+        </Link>
+      );
+    }
+
     return (
-      <a href={href} onClick={onClick} className={cls}>
+      <a
+        href={href}
+        onClick={onClick}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cls}
+      >
         {content}
       </a>
     );
   }
+
 
   return (
     <button type="button" onClick={onClick} className={cls}>
