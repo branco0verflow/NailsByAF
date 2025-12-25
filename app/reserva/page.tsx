@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 type Service = {
   id: string;
@@ -79,13 +79,12 @@ function Calendar({
   const [view, setView] = useState<Date>(() => startOfMonth(value ?? today));
 
   useEffect(() => {
-    // si el usuario selecciona una fecha fuera del mes visible, lo sincronizamos
     if (value) setView(startOfMonth(value));
   }, [value]);
 
   const monthStart = startOfMonth(view);
   const dim = daysInMonth(view);
-  const firstDow = dayIndexMondayFirst(monthStart); // 0..6
+  const firstDow = dayIndexMondayFirst(monthStart);
   const totalCells = Math.ceil((firstDow + dim) / 7) * 7;
 
   const monthLabel = view.toLocaleDateString("es-UY", { month: "long", year: "numeric" });
@@ -93,7 +92,6 @@ function Calendar({
   const canGoPrev = useMemo(() => {
     if (!minDate) return true;
     const prev = addMonths(view, -1);
-    // permitir ir al mes anterior si el fin del mes anterior aún tiene días >= minDate
     const prevEnd = endOfMonth(prev);
     return prevEnd >= new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
   }, [view, minDate]);
@@ -176,9 +174,7 @@ function Calendar({
         })}
       </div>
 
-      <div className="mt-4 text-xs text-white/55">
-        Seleccioná una fecha para ver horarios disponibles.
-      </div>
+      <div className="mt-4 text-xs text-white/55">Seleccioná una fecha para ver horarios disponibles.</div>
     </div>
   );
 }
@@ -206,8 +202,57 @@ function StepPill({ step, current, label }: { step: Step; current: Step; label: 
   );
 }
 
+function CardBrandRow() {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <span className="text-xs text-white/60">Métodos aceptados</span>
+
+      <div className="flex items-center gap-3">
+        {/* VISA */}
+        <div className="
+      h-10 w-16 sm:h-11 sm:w-20
+      rounded-xl
+      flex items-center justify-center
+    ">
+          <img
+            src="/visa.png"
+            alt="Visa"
+            className="h-full w-full object-contain opacity-90"
+          />
+        </div>
+
+        {/* MASTERCARD */}
+        <div className="
+      h-10 w-16 sm:h-11 sm:w-20
+      rounded-xl
+      flex items-center justify-center
+    ">
+          <img
+            src="/master.png"
+            alt="Mastercard"
+            className="h-full w-full object-contain opacity-90"
+          />
+        </div>
+      </div>
+    </div>
+
+  );
+}
+
 export default function CrearReservaPage() {
   const [step, setStep] = useState<Step>(1);
+
+  // Ref para scrollear al “top del flujo”
+  const topRef = useRef<HTMLDivElement | null>(null);
+
+  function scrollToTop() {
+    // si existe, lo usamos; si no, fallback a window
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
 
   // Paso 1
   const [serviceId, setServiceId] = useState<string>(SERVICES[0].id);
@@ -232,14 +277,12 @@ export default function CrearReservaPage() {
   // Paso 2
   const minDate = useMemo(() => {
     const d = new Date();
-    // ejemplo: no permitir días pasados
     return new Date(d.getFullYear(), d.getMonth(), d.getDate());
   }, []);
 
   const [date, setDate] = useState<Date | null>(null);
   const [time, setTime] = useState<string | null>(null);
 
-  // al cambiar fecha, reseteo hora (para evitar inconsistencias)
   useEffect(() => {
     setTime(null);
   }, [date?.getTime()]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -253,7 +296,7 @@ export default function CrearReservaPage() {
 
   const deposit = useMemo(() => Math.round(selectedService.price * 0.1), [selectedService.price]);
 
-  const canGoStep2 = Boolean(serviceId); // siempre true, pero queda listo si agregás validaciones
+  const canGoStep2 = Boolean(serviceId);
   const canGoStep3 = Boolean(date && time);
 
   const canPay =
@@ -263,13 +306,29 @@ export default function CrearReservaPage() {
     cardCvc.trim().length >= 3;
 
   function next() {
-    if (step === 1 && canGoStep2) setStep(2);
-    if (step === 2 && canGoStep3) setStep(3);
+    if (step === 1 && canGoStep2) {
+      setStep(2);
+      scrollToTop();
+      return;
+    }
+    if (step === 2 && canGoStep3) {
+      setStep(3);
+      scrollToTop();
+      return;
+    }
   }
 
   function back() {
-    if (step === 2) setStep(1);
-    if (step === 3) setStep(2);
+    if (step === 2) {
+      setStep(1);
+      scrollToTop();
+      return;
+    }
+    if (step === 3) {
+      setStep(2);
+      scrollToTop();
+      return;
+    }
   }
 
   function resetAll() {
@@ -283,15 +342,24 @@ export default function CrearReservaPage() {
     setCardExp("");
     setCardCvc("");
     setPaid(false);
+    scrollToTop();
   }
 
   return (
     <main className="min-h-screen bg-black text-white">
-      {/* Background subtle */}
+      {/* Background premium con imagen */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_20%,rgba(236,72,153,0.18)_0%,rgba(0,0,0,0)_60%),radial-gradient(50%_50%_at_80%_10%,rgba(56,189,248,0.14)_0%,rgba(0,0,0,0)_60%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-black" />
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35"
+          style={{ backgroundImage: "url('/bg-wwd.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/75 to-black" />
+        <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_20%,rgba(236,72,153,0.16)_0%,rgba(0,0,0,0)_60%),radial-gradient(50%_50%_at_80%_10%,rgba(56,189,248,0.12)_0%,rgba(0,0,0,0)_60%)]" />
       </div>
+
+
+      {/* Ancla para scroll-to-top */}
+      <div ref={topRef} />
 
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
         {/* Header */}
@@ -305,8 +373,7 @@ export default function CrearReservaPage() {
               Reservá tu turno en 3 pasos
             </h1>
             <p className="text-sm sm:text-base text-white/70 max-w-2xl">
-              Esta pantalla es una demostración visual (sin conexión a API). Seleccioná un servicio, elegí fecha/hora y
-              simulá el pago de la seña.
+              Seleccioná un servicio, elegí fecha/hora y simulá el pago de la seña.
             </p>
           </div>
         </div>
@@ -354,9 +421,7 @@ export default function CrearReservaPage() {
 
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                     <div className="text-sm font-medium text-white/85">Subir imagen de diseño</div>
-                    <p className="mt-1 text-xs sm:text-sm text-white/60">
-                      JPG/PNG. Se mostrará una vista previa local (no se sube a ningún servidor).
-                    </p>
+                    <p className="mt-1 text-xs sm:text-sm text-white/60">JPG/PNG. Se mostrará una vista previa local.</p>
 
                     <div className="mt-3 flex flex-col sm:flex-row gap-3 sm:items-center">
                       <label
@@ -392,11 +457,7 @@ export default function CrearReservaPage() {
                     {designPreview && (
                       <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-black/30">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={designPreview}
-                          alt="Vista previa del diseño"
-                          className="h-48 w-full object-cover sm:h-56"
-                        />
+                        <img src={designPreview} alt="Vista previa del diseño" className="h-48 w-full object-cover sm:h-56" />
                       </div>
                     )}
                   </div>
@@ -434,9 +495,7 @@ export default function CrearReservaPage() {
                     </button>
                   </div>
 
-                  <div className="mt-3 text-xs text-white/55">
-                    Paso 1 de 3 · Podés avanzar sin subir imagen.
-                  </div>
+                  <div className="mt-3 text-xs text-white/55">Paso 1 de 3 · Podés avanzar sin subir imagen.</div>
                 </div>
               </div>
             </div>
@@ -452,11 +511,7 @@ export default function CrearReservaPage() {
                 </p>
 
                 <div className="mt-6">
-                  <Calendar
-                    value={date}
-                    onChange={(d) => setDate(d)}
-                    minDate={minDate}
-                  />
+                  <Calendar value={date} onChange={(d) => setDate(d)} minDate={minDate} />
                 </div>
 
                 <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
@@ -491,10 +546,6 @@ export default function CrearReservaPage() {
                         </button>
                       );
                     })}
-                  </div>
-
-                  <div className="mt-4 text-xs text-white/55">
-                    En un sistema real, estos horarios vendrían de disponibilidad (API).
                   </div>
                 </div>
               </div>
@@ -547,13 +598,23 @@ export default function CrearReservaPage() {
           {step === 3 && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
               <div className="lg:col-span-7">
-                <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em]">Pagar seña</h2>
-                <p className="mt-2 text-sm sm:text-base text-white/70">
-                  Simulación de pago. No se procesa ninguna transacción real.
-                </p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em]">Pagar seña</h2>
+                    <p className="mt-2 text-sm sm:text-base text-white/70">
+                      Simulación de pago. No se procesa ninguna transacción real.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur px-4 py-3">
+                    <CardBrandRow />
+                  </div>
+                </div>
 
                 <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-                  <div className="text-sm font-medium text-white/85">Datos de tarjeta</div>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-sm font-medium text-white/85">Datos de tarjeta</div>
+                    <div className="text-xs text-white/55">Pago seguro</div>
+                  </div>
 
                   <div className="mt-4 grid grid-cols-1 gap-4">
                     <label className="grid gap-2">
@@ -571,7 +632,6 @@ export default function CrearReservaPage() {
                       <input
                         value={cardNumber}
                         onChange={(e) => {
-                          // formato simple: agrupar cada 4
                           const raw = e.target.value.replace(/[^\d]/g, "").slice(0, 19);
                           const grouped = raw.replace(/(\d{4})(?=\d)/g, "$1 ");
                           setCardNumber(grouped);
@@ -611,6 +671,20 @@ export default function CrearReservaPage() {
                       </label>
                     </div>
 
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <div className="text-sm font-medium text-white/85">Protección de datos</div>
+                          <div className="mt-1 text-xs text-white/60">
+                            En esta demo no se guarda información real. En producción, se tokeniza y se procesa vía pasarela.
+                          </div>
+                        </div>
+                        <div className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white/70">
+                          SSL
+                        </div>
+                      </div>
+                    </div>
+
                     {paid && (
                       <div className="rounded-2xl border border-emerald-400/25 bg-emerald-400/10 p-4 text-sm text-emerald-200">
                         Pago simulado confirmado. Tu reserva quedó “confirmada” en esta demo.
@@ -638,9 +712,11 @@ export default function CrearReservaPage() {
                   <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                     <div className="text-xs text-white/55">Seña a pagar (10%)</div>
                     <div className="mt-1 text-2xl font-semibold">{formatUYU(deposit)}</div>
-                    <div className="mt-2 text-xs text-white/55">
-                      Esto es una demo: no se procesa ningún pago real.
-                    </div>
+                    <div className="mt-2 text-xs text-white/55">Esto es una demo: no se procesa ningún pago real.</div>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <CardBrandRow />
                   </div>
 
                   <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -679,11 +755,6 @@ export default function CrearReservaPage() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Footer hint */}
-        <div className="mt-6 text-xs text-white/45">
-          Consejo: cuando lo conectes a backend, el calendario/horarios deberían venir de un endpoint de disponibilidad.
         </div>
       </div>
     </main>
