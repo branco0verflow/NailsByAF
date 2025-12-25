@@ -110,7 +110,7 @@ function Calendar({
           )}
           aria-label="Mes anterior"
         >
-          <span className="text-white/80">‹</span>
+          <span className="text-white/80">‹f</span>
         </button>
 
         <div className="text-sm sm:text-base font-semibold text-white capitalize">{monthLabel}</div>
@@ -179,7 +179,15 @@ function Calendar({
   );
 }
 
-function StepPill({ step, current, label }: { step: Step; current: Step; label: string }) {
+function StepPill({
+  step,
+  current,
+  label,
+}: {
+  step: Step;
+  current: Step;
+  label: string;
+}) {
   const active = step === current;
   const done = step < current;
 
@@ -187,20 +195,55 @@ function StepPill({ step, current, label }: { step: Step; current: Step; label: 
     <div className="flex items-center gap-3">
       <div
         className={cn(
-          "h-9 w-9 rounded-xl grid place-items-center border",
+          "relative h-10 w-10 rounded-2xl grid place-items-center border",
+          "shadow-[0_10px_30px_rgba(0,0,0,0.35)]",
+          "transition-colors duration-300",
           done
-            ? "bg-white/[0.12] border-white/15 text-white"
+            ? "bg-emerald-500/15 border-emerald-400/30 text-emerald-200"
             : active
-              ? "bg-white/[0.10] border-white/20 text-white"
+              ? "bg-white/[0.10] border-white/25 text-white"
               : "bg-white/[0.03] border-white/10 text-white/55"
         )}
       >
-        {done ? "✓" : step}
+        {/* Glow sutil cuando está activo o done */}
+        {(active || done) && (
+          <span
+            className={cn(
+              "absolute inset-0 -z-10 rounded-2xl blur-xl opacity-60",
+              done ? "bg-emerald-400/25" : "bg-white/15"
+            )}
+          />
+        )}
+
+        <span className={cn("text-sm font-semibold", done && "text-emerald-200")}>
+          {done ? "✓" : step}
+        </span>
       </div>
-      <div className={cn("text-sm font-medium", active || done ? "text-white" : "text-white/55")}>{label}</div>
+
+      <div className="min-w-0">
+        <div
+          className={cn(
+            "text-sm font-semibold leading-tight",
+            done ? "text-emerald-200" : active ? "text-white" : "text-white/60"
+          )}
+        >
+          {label}
+        </div>
+
+        {/* Subtexto opcional (queda pro). Si no lo querés, borralo */}
+        <div
+          className={cn(
+            "text-[11px] leading-tight",
+            done ? "text-emerald-200/70" : active ? "text-white/55" : "text-white/35"
+          )}
+        >
+          {done ? "Completado" : active ? "En progreso" : "Pendiente"}
+        </div>
+      </div>
     </div>
   );
 }
+
 
 function CardBrandRow() {
   return (
@@ -346,12 +389,12 @@ export default function CrearReservaPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen text-white">
       {/* Background premium con imagen */}
       <div className="fixed inset-0 -z-10">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35"
-          style={{ backgroundImage: "url('/bg-wwd.png')" }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/hero44.png')" }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/75 to-black" />
         <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_20%,rgba(236,72,153,0.16)_0%,rgba(0,0,0,0)_60%),radial-gradient(50%_50%_at_80%_10%,rgba(56,189,248,0.12)_0%,rgba(0,0,0,0)_60%)]" />
@@ -373,7 +416,7 @@ export default function CrearReservaPage() {
               Reservá tu turno en 3 pasos
             </h1>
             <p className="text-sm sm:text-base text-white/70 max-w-2xl">
-              Seleccioná un servicio, elegí fecha/hora y simulá el pago de la seña.
+              Seleccioná un servicio, elegí fecha/hora y efectuá el pago de la seña.
             </p>
           </div>
         </div>

@@ -14,13 +14,7 @@ const body = Inter({
   variable: "--font-body",
 });
 
-export const metadata: Metadata = {
-  title: "Nails Anto Figueroa",
-  description: "Nail Art premium. Reservá tu turno o conocé nuestros cursos.",
-  icons: {
-    icon: "/favicon.svg",
-  },
-};
+
 
 export default function RootLayout({
   children,
@@ -33,3 +27,23 @@ export default function RootLayout({
     </html>
   );
 }
+
+export const metadata = {
+  openGraph: {
+    title: "Nails by Anto Figueroa",
+    description: "Reservá tu turno online de forma rápida y sencilla",
+    icons: {
+    icon: "/favicon.svg",
+  },
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Nails Anto Figueroa",
+      },
+    ],
+    type: "website",
+  },
+};
+

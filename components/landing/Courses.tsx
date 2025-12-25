@@ -141,7 +141,7 @@ export function Courses() {
           {/* CTAs: full-width en mobile, lado a lado en sm+ */}
           <div data-c className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <PremiumButton
-              href="https://wa.me/59800000000?text=Hola%20Anto%2C%20me%20interesan%20los%20cursos%20de%20Nail%20Art."
+              href="https://wa.me/59891307261?text=Hola%21%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20de%20los%20cursos%20Nail%20Art"
               variant="primary"
               className="w-full"
             >
