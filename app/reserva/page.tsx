@@ -306,6 +306,8 @@ export default function CrearReservaPage() {
 
   const [designFile, setDesignFile] = useState<File | null>(null);
   const [designPreview, setDesignPreview] = useState<string | null>(null);
+  const [clientName, setClientName] = useState("");
+  const [phone, setPhone] = useState("");
 
   useEffect(() => {
     if (!designFile) {
@@ -339,7 +341,8 @@ export default function CrearReservaPage() {
 
   const deposit = useMemo(() => Math.round(selectedService.price * 0.1), [selectedService.price]);
 
-  const canGoStep2 = Boolean(serviceId);
+ const canGoStep2 = Boolean(serviceId) && clientName.trim().length >= 3 && phone.length >= 8;
+
   const canGoStep3 = Boolean(date && time);
 
   const canPay =
@@ -387,6 +390,14 @@ export default function CrearReservaPage() {
     setPaid(false);
     scrollToTop();
   }
+
+  
+
+
+  const handlePhoneChange = (value : string) => {
+    setPhone(value.replace(/\D/g, ""));
+  };
+
 
   return (
     <main className="min-h-screen text-white">
@@ -444,6 +455,50 @@ export default function CrearReservaPage() {
                 </p>
 
                 <div className="mt-6 grid grid-cols-1 gap-4">
+
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <div className="text-sm font-medium text-white/85">Datos del cliente</div>
+
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Nombre */}
+                      <label className="grid gap-2">
+                        <span className="text-sm text-white/70">Nombre completo</span>
+                        <input
+                          type="text"
+                          value={clientName}
+                          onChange={(e) => setClientName(e.target.value)}
+                          placeholder="Ej: Ana Rodríguez"
+                          className={cn(
+                            "h-12 rounded-2xl border border-white/10 bg-black/30 px-4 text-white outline-none",
+                            "focus:border-white/25 focus:ring-2 focus:ring-white/10"
+                          )}
+                        />
+                      </label>
+
+                      {/* Teléfono */}
+                      <label className="grid gap-2">
+                        <span className="text-sm text-white/70">Teléfono</span>
+
+                        <div className="flex h-12 rounded-2xl border border-white/10 bg-black/30 overflow-hidden focus-within:ring-2 focus-within:ring-white/10">
+                          <div className="flex items-center gap-1 px-3 text-sm text-white/70 border-r border-white/10 bg-black/40">
+                            🇺🇾 +598
+                          </div>
+
+                          <input
+                            type="tel"
+                            inputMode="numeric"
+                            value={phone}
+                            onChange={(e) => handlePhoneChange(e.target.value)}
+                            placeholder="91234567"
+                            className="flex-1 bg-transparent px-3 text-white outline-none"
+                          />
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+
+
                   <label className="grid gap-2">
                     <span className="text-sm font-medium text-white/85">Seleccionar servicio</span>
                     <select
