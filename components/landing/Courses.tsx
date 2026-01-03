@@ -88,9 +88,9 @@ export function Courses() {
   }, []);
 
   const socials: Social[] = [
-    { label: "Instagram", href: "https://www.instagram.com/nails.antofigueroa", Icon: InstagramIcon },
-    { label: "TikTok", href: "https://www.tiktok.com/@nailsby.antofigueroa", Icon: TikTokIcon },
-    { label: "Facebook", href: "https://www.facebook.com/AntoNailss?locale=es_LA", Icon: FacebookIcon },
+    { label: "Instagram", href: "#", Icon: InstagramIcon },
+    { label: "TikTok", href: "#", Icon: TikTokIcon },
+    { label: "Facebook", href: "#", Icon: FacebookIcon },
   ];
 
   return (
@@ -141,7 +141,7 @@ export function Courses() {
           {/* CTAs: full-width en mobile, lado a lado en sm+ */}
           <div data-c className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <PremiumButton
-              href="https://wa.me/59891307261?text=Hola%21%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20de%20los%20cursos%20Nail%20Art"
+              href="https://wa.me/5989000000?text=Hola%21%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20de%20los%20cursos%20Nail%20Art"
               variant="primary"
               className="w-full"
             >
@@ -175,7 +175,7 @@ export function Courses() {
         {/* Footer: social icons + copyright */}
         <footer className="mt-12  flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-white/55">
           <div>
-            © {new Date().getFullYear()} Nails by Anto Figueroa
+            © {new Date().getFullYear()} Nails by Demo
           </div>
 
           <div className="flex items-center gap-3">

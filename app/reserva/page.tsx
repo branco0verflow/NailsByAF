@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 
 type Service = {
   id: string;
@@ -87,13 +88,19 @@ function Calendar({
   const firstDow = dayIndexMondayFirst(monthStart);
   const totalCells = Math.ceil((firstDow + dim) / 7) * 7;
 
-  const monthLabel = view.toLocaleDateString("es-UY", { month: "long", year: "numeric" });
+  const monthLabel = view.toLocaleDateString("es-UY", {
+    month: "long",
+    year: "numeric",
+  });
 
   const canGoPrev = useMemo(() => {
     if (!minDate) return true;
     const prev = addMonths(view, -1);
     const prevEnd = endOfMonth(prev);
-    return prevEnd >= new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+    return (
+      prevEnd >=
+      new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate())
+    );
   }, [view, minDate]);
 
   return (
@@ -110,10 +117,12 @@ function Calendar({
           )}
           aria-label="Mes anterior"
         >
-          <span className="text-white/80">‹f</span>
+          <span className="text-white/80">‹</span>
         </button>
 
-        <div className="text-sm sm:text-base font-semibold text-white capitalize">{monthLabel}</div>
+        <div className="text-sm sm:text-base font-semibold text-white capitalize">
+          {monthLabel}
+        </div>
 
         <button
           type="button"
@@ -141,11 +150,20 @@ function Calendar({
           const dayNum = idx - firstDow + 1;
           const inMonth = dayNum >= 1 && dayNum <= dim;
 
-          const cellDate = new Date(view.getFullYear(), view.getMonth(), clamp(dayNum, 1, dim));
+          const cellDate = new Date(
+            view.getFullYear(),
+            view.getMonth(),
+            clamp(dayNum, 1, dim)
+          );
           const isDisabled =
             !inMonth ||
             (minDate
-              ? cellDate < new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate())
+              ? cellDate <
+              new Date(
+                minDate.getFullYear(),
+                minDate.getMonth(),
+                minDate.getDate()
+              )
               : false);
 
           const selected = value && inMonth && isSameDay(cellDate, value);
@@ -156,12 +174,19 @@ function Calendar({
               key={idx}
               type="button"
               disabled={isDisabled}
-              onClick={() => inMonth && !isDisabled && onChange(new Date(view.getFullYear(), view.getMonth(), dayNum))}
+              onClick={() =>
+                inMonth &&
+                !isDisabled &&
+                onChange(
+                  new Date(view.getFullYear(), view.getMonth(), dayNum)
+                )
+              }
               className={cn(
                 "h-10 sm:h-11 rounded-xl text-sm transition relative",
                 "border border-transparent",
                 inMonth ? "text-white/85" : "text-white/25",
-                !isDisabled && "hover:bg-white/[0.06] hover:border-white/10",
+                !isDisabled &&
+                "hover:bg-white/[0.06] hover:border-white/10",
                 isDisabled && "opacity-40 cursor-not-allowed",
                 selected && "bg-white/[0.12] border-white/20 text-white",
                 isToday && !selected && "ring-1 ring-white/20"
@@ -174,7 +199,9 @@ function Calendar({
         })}
       </div>
 
-      <div className="mt-4 text-xs text-white/55">Seleccioná una fecha para ver horarios disponibles.</div>
+      <div className="mt-4 text-xs text-white/55">
+        Seleccioná una fecha para ver horarios disponibles.
+      </div>
     </div>
   );
 }
@@ -205,7 +232,6 @@ function StepPill({
               : "bg-white/[0.03] border-white/10 text-white/55"
         )}
       >
-        {/* Glow sutil cuando está activo o done */}
         {(active || done) && (
           <span
             className={cn(
@@ -230,7 +256,6 @@ function StepPill({
           {label}
         </div>
 
-        {/* Subtexto opcional (queda pro). Si no lo querés, borralo */}
         <div
           className={cn(
             "text-[11px] leading-tight",
@@ -244,19 +269,13 @@ function StepPill({
   );
 }
 
-
 function CardBrandRow() {
   return (
     <div className="flex items-center justify-between gap-4">
       <span className="text-xs text-white/60">Métodos aceptados</span>
 
       <div className="flex items-center gap-3">
-        {/* VISA */}
-        <div className="
-      h-10 w-16 sm:h-11 sm:w-20
-      rounded-xl
-      flex items-center justify-center
-    ">
+        <div className="h-10 w-16 sm:h-11 sm:w-20 rounded-xl flex items-center justify-center">
           <img
             src="/visa.png"
             alt="Visa"
@@ -264,12 +283,7 @@ function CardBrandRow() {
           />
         </div>
 
-        {/* MASTERCARD */}
-        <div className="
-      h-10 w-16 sm:h-11 sm:w-20
-      rounded-xl
-      flex items-center justify-center
-    ">
+        <div className="h-10 w-16 sm:h-11 sm:w-20 rounded-xl flex items-center justify-center">
           <img
             src="/master.png"
             alt="Mastercard"
@@ -278,18 +292,15 @@ function CardBrandRow() {
         </div>
       </div>
     </div>
-
   );
 }
 
 export default function CrearReservaPage() {
   const [step, setStep] = useState<Step>(1);
 
-  // Ref para scrollear al “top del flujo”
   const topRef = useRef<HTMLDivElement | null>(null);
 
   function scrollToTop() {
-    // si existe, lo usamos; si no, fallback a window
     if (topRef.current) {
       topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
@@ -332,24 +343,20 @@ export default function CrearReservaPage() {
     setTime(null);
   }, [date?.getTime()]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Paso 3: tarjeta simulada
-  const [cardName, setCardName] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExp, setCardExp] = useState("");
-  const [cardCvc, setCardCvc] = useState("");
-  const [paid, setPaid] = useState(false);
+  // Paso 3: confirmación (demo)
+  const [confirmed, setConfirmed] = useState(false);
 
-  const deposit = useMemo(() => Math.round(selectedService.price * 0.1), [selectedService.price]);
+  const deposit = useMemo(
+    () => Math.round(selectedService.price * 0.1),
+    [selectedService.price]
+  );
 
- const canGoStep2 = Boolean(serviceId) && clientName.trim().length >= 3 && phone.length >= 8;
+  const canGoStep2 =
+    Boolean(serviceId) && clientName.trim().length >= 3 && phone.length >= 8;
 
   const canGoStep3 = Boolean(date && time);
 
-  const canPay =
-    cardName.trim().length >= 3 &&
-    cardNumber.replace(/\s/g, "").length >= 12 &&
-    /^\d{2}\/\d{2}$/.test(cardExp.trim()) &&
-    cardCvc.trim().length >= 3;
+  const canConfirm = canGoStep2 && canGoStep3 && !confirmed;
 
   function next() {
     if (step === 1 && canGoStep2) {
@@ -371,6 +378,8 @@ export default function CrearReservaPage() {
       return;
     }
     if (step === 3) {
+      // permitir volver aunque esté confirmada (por si quiere “editar” en demo)
+      setConfirmed(false);
       setStep(2);
       scrollToTop();
       return;
@@ -383,21 +392,30 @@ export default function CrearReservaPage() {
     setDesignFile(null);
     setDate(null);
     setTime(null);
-    setCardName("");
-    setCardNumber("");
-    setCardExp("");
-    setCardCvc("");
-    setPaid(false);
+    setClientName("");
+    setPhone("");
+    setConfirmed(false);
     scrollToTop();
   }
 
-  
-
-
-  const handlePhoneChange = (value : string) => {
+  const handlePhoneChange = (value: string) => {
     setPhone(value.replace(/\D/g, ""));
   };
 
+  // Helpers UI
+  const formattedTurno = useMemo(() => {
+    if (!date || !time) return "—";
+    return `${date.toLocaleDateString("es-UY")} · ${time}`;
+  }, [date, time]);
+
+  const demoReservaId = useMemo(() => {
+    // ID corto y prolijo para “sensación real” (sin crypto)
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let out = "";
+    for (let i = 0; i < 8; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    return `R-${out}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [confirmed]);
 
   return (
     <main className="min-h-screen text-white">
@@ -411,26 +429,32 @@ export default function CrearReservaPage() {
         <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_20%,rgba(236,72,153,0.16)_0%,rgba(0,0,0,0)_60%),radial-gradient(50%_50%_at_80%_10%,rgba(56,189,248,0.12)_0%,rgba(0,0,0,0)_60%)]" />
       </div>
 
-
       {/* Ancla para scroll-to-top */}
       <div ref={topRef} />
 
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
         {/* Header */}
-        <div className="flex flex-col gap-3 sm:gap-4">
-          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] tracking-[0.28em] uppercase text-white/70 backdrop-blur">
-            Crear reserva
+        <div className="flex flex-col justify-between gap-3 sm:gap-4">
+          <div className="flex flex-row flex-wrap items-center gap-2">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] tracking-[0.28em] uppercase text-white/70 backdrop-blur">
+              Crear reserva
+            </div>
+
+            <Link href="../" className="inline-flex w-fit items-center gap-2 rounded-full border border-white/80 bg-white/[0.04] px-4 py-2 text-[11px] tracking-[0.28em] uppercase text-white/70 backdrop-blur">
+              <span className="text-sm">←</span> Inicio
+            </Link>
           </div>
 
           <div className="flex flex-col gap-2">
-            <h1 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] leading-[1.06]">
-              Reservá tu turno en 3 pasos
-            </h1>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-0.02em] leading-[1.06]">
+              Reservá en 3 pasos
+            </h2>
             <p className="text-sm sm:text-base text-white/70 max-w-2xl">
-              Seleccioná un servicio, elegí fecha/hora y efectuá el pago de la seña.
+              Seleccioná un servicio, elegí fecha/hora y confirmá tu reserva.
             </p>
           </div>
         </div>
+
 
         {/* Steps */}
         <div className="mt-7 sm:mt-9 grid grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur p-4 sm:p-5">
@@ -439,7 +463,7 @@ export default function CrearReservaPage() {
             <div className="hidden sm:block h-px sm:h-auto sm:w-px bg-white/10" />
             <StepPill step={2} current={step} label="Fecha" />
             <div className="hidden sm:block h-px sm:h-auto sm:w-px bg-white/10" />
-            <StepPill step={3} current={step} label="Pagar seña" />
+            <StepPill step={3} current={step} label="Confirmación" />
           </div>
         </div>
 
@@ -449,18 +473,20 @@ export default function CrearReservaPage() {
           {step === 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
               <div className="lg:col-span-7">
-                <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em]">Servicio</h2>
+                <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em]">
+                  Servicio
+                </h2>
                 <p className="mt-2 text-sm sm:text-base text-white/70">
                   Elegí el servicio y, si querés, subí una imagen de referencia para el diseño.
                 </p>
 
                 <div className="mt-6 grid grid-cols-1 gap-4">
-
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="text-sm font-medium text-white/85">Datos del cliente</div>
+                    <div className="text-sm font-medium text-white/85">
+                      Datos del cliente
+                    </div>
 
                     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {/* Nombre */}
                       <label className="grid gap-2">
                         <span className="text-sm text-white/70">Nombre completo</span>
                         <input
@@ -475,7 +501,6 @@ export default function CrearReservaPage() {
                         />
                       </label>
 
-                      {/* Teléfono */}
                       <label className="grid gap-2">
                         <span className="text-sm text-white/70">Teléfono</span>
 
@@ -497,10 +522,10 @@ export default function CrearReservaPage() {
                     </div>
                   </div>
 
-
-
                   <label className="grid gap-2">
-                    <span className="text-sm font-medium text-white/85">Seleccionar servicio</span>
+                    <span className="text-sm font-medium text-white/85">
+                      Seleccionar servicio
+                    </span>
                     <select
                       value={serviceId}
                       onChange={(e) => setServiceId(e.target.value)}
@@ -518,8 +543,12 @@ export default function CrearReservaPage() {
                   </label>
 
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="text-sm font-medium text-white/85">Subir imagen de diseño</div>
-                    <p className="mt-1 text-xs sm:text-sm text-white/60">JPG/PNG. Se mostrará una vista previa local.</p>
+                    <div className="text-sm font-medium text-white/85">
+                      Subir imagen de diseño
+                    </div>
+                    <p className="mt-1 text-xs sm:text-sm text-white/60">
+                      JPG/PNG. Se mostrará una vista previa local.
+                    </p>
 
                     <div className="mt-3 flex flex-col sm:flex-row gap-3 sm:items-center">
                       <label
@@ -534,7 +563,9 @@ export default function CrearReservaPage() {
                           className="hidden"
                           onChange={(e) => setDesignFile(e.target.files?.[0] ?? null)}
                         />
-                        <span className="text-sm font-semibold text-white/90">Elegir imagen</span>
+                        <span className="text-sm font-semibold text-white/90">
+                          Elegir imagen
+                        </span>
                       </label>
 
                       {designFile && (
@@ -555,7 +586,11 @@ export default function CrearReservaPage() {
                     {designPreview && (
                       <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-black/30">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={designPreview} alt="Vista previa del diseño" className="h-48 w-full object-cover sm:h-56" />
+                        <img
+                          src={designPreview}
+                          alt="Vista previa del diseño"
+                          className="h-48 w-full object-cover sm:h-56"
+                        />
                       </div>
                     )}
                   </div>
@@ -565,16 +600,20 @@ export default function CrearReservaPage() {
               <div className="lg:col-span-5">
                 <div className="rounded-2xl border border-white/10 bg-black/25 p-5">
                   <div className="text-sm text-white/60">Resumen</div>
-                  <div className="mt-2 text-lg font-semibold text-white">{selectedService.name}</div>
+                  <div className="mt-2 text-lg font-semibold text-white">
+                    {selectedService.name}
+                  </div>
                   <div className="mt-1 text-sm text-white/70">
                     {formatUYU(selectedService.price)} · {selectedService.durationMin} min
                   </div>
 
                   <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="text-xs text-white/55">Seña (10%)</div>
-                    <div className="mt-1 text-2xl font-semibold">{formatUYU(deposit)}</div>
+                    <div className="text-xs text-white/55">Seña sugerida (10%)</div>
+                    <div className="mt-1 text-2xl font-semibold">
+                      {formatUYU(deposit)}
+                    </div>
                     <div className="mt-2 text-xs text-white/55">
-                      La seña se calcula sobre el precio del servicio seleccionado.
+                      En producción, la seña puede activarse como opción para reducir ausencias.
                     </div>
                   </div>
 
@@ -593,7 +632,9 @@ export default function CrearReservaPage() {
                     </button>
                   </div>
 
-                  <div className="mt-3 text-xs text-white/55">Paso 1 de 3 · Podés avanzar sin subir imagen.</div>
+                  <div className="mt-3 text-xs text-white/55">
+                    Paso 1 de 3 · Podés avanzar sin subir imagen.
+                  </div>
                 </div>
               </div>
             </div>
@@ -603,7 +644,9 @@ export default function CrearReservaPage() {
           {step === 2 && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
               <div className="lg:col-span-7">
-                <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em]">Fecha</h2>
+                <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em]">
+                  Fecha
+                </h2>
                 <p className="mt-2 text-sm sm:text-base text-white/70">
                   Elegí un día y luego un horario disponible (ficticio) para continuar.
                 </p>
@@ -617,7 +660,11 @@ export default function CrearReservaPage() {
                     <div className="text-sm font-medium text-white/85">Horarios</div>
                     <div className="text-xs text-white/55">
                       {date
-                        ? date.toLocaleDateString("es-UY", { weekday: "long", day: "2-digit", month: "long" })
+                        ? date.toLocaleDateString("es-UY", {
+                          weekday: "long",
+                          day: "2-digit",
+                          month: "long",
+                        })
                         : "Seleccioná una fecha"}
                     </div>
                   </div>
@@ -651,16 +698,16 @@ export default function CrearReservaPage() {
               <div className="lg:col-span-5">
                 <div className="rounded-2xl border border-white/10 bg-black/25 p-5">
                   <div className="text-sm text-white/60">Resumen</div>
-                  <div className="mt-2 text-lg font-semibold text-white">{selectedService.name}</div>
+                  <div className="mt-2 text-lg font-semibold text-white">
+                    {selectedService.name}
+                  </div>
                   <div className="mt-1 text-sm text-white/70">
                     {formatUYU(selectedService.price)} · {selectedService.durationMin} min
                   </div>
 
                   <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                     <div className="text-xs text-white/55">Fecha y hora</div>
-                    <div className="mt-1 text-sm text-white/85">
-                      {date ? date.toLocaleDateString("es-UY") : "—"} · {time ?? "—"}
-                    </div>
+                    <div className="mt-1 text-sm text-white/85">{formattedTurno}</div>
                   </div>
 
                   <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -695,126 +742,133 @@ export default function CrearReservaPage() {
           {/* STEP 3 */}
           {step === 3 && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+              {/* Left */}
               <div className="lg:col-span-7">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em]">Pagar seña</h2>
-                    <p className="mt-2 text-sm sm:text-base text-white/70">
-                      Simulación de pago. No se procesa ninguna transacción real.
-                    </p>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur px-4 py-3">
-                    <CardBrandRow />
-                  </div>
+                <div className="flex flex-col gap-2">
+                  <h2 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em]">
+                    Confirmar reserva
+                  </h2>
+                  <p className="mt-1 text-sm sm:text-base text-white/70">
+                    Revisá los datos antes de confirmar. En esta demo no se solicita tarjeta.
+                  </p>
                 </div>
 
                 <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-medium text-white/85">Datos de tarjeta</div>
-                    <div className="text-xs text-white/55">Pago seguro</div>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-sm font-medium text-white/85">
+                        Seña (opcional)
+                      </div>
+                      <div className="mt-1 text-xs text-white/60">
+                        En producción, este paso puede incluir pago de seña (por ejemplo 10%) para reducir ausencias.
+                        En la demo está desactivado para mantener el flujo simple y confiable.
+                      </div>
+                    </div>
+                    <div className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white/70">
+                      Demo
+                    </div>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-1 gap-4">
-                    <label className="grid gap-2">
-                      <span className="text-xs text-white/60">Nombre en la tarjeta</span>
-                      <input
-                        value={cardName}
-                        onChange={(e) => setCardName(e.target.value)}
-                        placeholder="Ej: Anto Figueroa"
-                        className="h-12 rounded-2xl border border-white/10 bg-black/25 px-4 text-white outline-none focus:border-white/25 focus:ring-2 focus:ring-white/10"
-                      />
-                    </label>
-
-                    <label className="grid gap-2">
-                      <span className="text-xs text-white/60">Número</span>
-                      <input
-                        value={cardNumber}
-                        onChange={(e) => {
-                          const raw = e.target.value.replace(/[^\d]/g, "").slice(0, 19);
-                          const grouped = raw.replace(/(\d{4})(?=\d)/g, "$1 ");
-                          setCardNumber(grouped);
-                        }}
-                        inputMode="numeric"
-                        placeholder="1234 5678 9012 3456"
-                        className="h-12 rounded-2xl border border-white/10 bg-black/25 px-4 text-white outline-none focus:border-white/25 focus:ring-2 focus:ring-white/10"
-                      />
-                    </label>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <label className="grid gap-2">
-                        <span className="text-xs text-white/60">Vencimiento</span>
-                        <input
-                          value={cardExp}
-                          onChange={(e) => {
-                            let v = e.target.value.replace(/[^\d/]/g, "");
-                            if (v.length === 2 && !v.includes("/")) v = v + "/";
-                            v = v.slice(0, 5);
-                            setCardExp(v);
-                          }}
-                          inputMode="numeric"
-                          placeholder="MM/AA"
-                          className="h-12 rounded-2xl border border-white/10 bg-black/25 px-4 text-white outline-none focus:border-white/25 focus:ring-2 focus:ring-white/10"
-                        />
-                      </label>
-
-                      <label className="grid gap-2">
-                        <span className="text-xs text-white/60">CVC</span>
-                        <input
-                          value={cardCvc}
-                          onChange={(e) => setCardCvc(e.target.value.replace(/[^\d]/g, "").slice(0, 4))}
-                          inputMode="numeric"
-                          placeholder="123"
-                          className="h-12 rounded-2xl border border-white/10 bg-black/25 px-4 text-white outline-none focus:border-white/25 focus:ring-2 focus:ring-white/10"
-                        />
-                      </label>
+                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                      <div className="text-xs text-white/55">Total del servicio</div>
+                      <div className="mt-1 text-lg font-semibold text-white">
+                        {formatUYU(selectedService.price)}
+                      </div>
                     </div>
 
                     <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <div className="text-sm font-medium text-white/85">Protección de datos</div>
-                          <div className="mt-1 text-xs text-white/60">
-                            En esta demo no se guarda información real. En producción, se tokeniza y se procesa vía pasarela.
-                          </div>
-                        </div>
-                        <div className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white/70">
-                          SSL
-                        </div>
+                      <div className="text-xs text-white/55">Seña sugerida (10%)</div>
+                      <div className="mt-1 text-lg font-semibold text-white">
+                        {formatUYU(deposit)}
                       </div>
                     </div>
+                  </div>
 
-                    {paid && (
-                      <div className="rounded-2xl border border-emerald-400/25 bg-emerald-400/10 p-4 text-sm text-emerald-200">
-                        Pago simulado confirmado. Tu reserva quedó “confirmada” en esta demo.
+                  <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="text-sm font-medium text-white/85">
+                          Confirmación y recordatorios
+                        </div>
+                        <div className="mt-1 text-xs text-white/60">
+                          En una implementación real, el cliente puede recibir confirmación y recordatorio automático previo al turno.
+                        </div>
                       </div>
-                    )}
+                      <div className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white/70">
+                        Automático
+                      </div>
+                    </div>
+                  </div>
+
+                  {confirmed && (
+                    <div className="mt-4 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 p-4">
+                      <div className="text-sm font-medium text-emerald-200">
+                        Reserva confirmada
+                      </div>
+                      <div className="mt-1 text-xs text-emerald-100/80">
+                        Código de reserva (demo): <span className="font-semibold">{demoReservaId}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Opcional: “métodos” como feature (sin pedir datos) */}
+                <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+                  <CardBrandRow />
+                  <div className="mt-2 text-xs text-white/55">
+                    En la versión final, podés habilitar pago de seña con pasarela (Stripe/Mercado Pago, etc.).
                   </div>
                 </div>
               </div>
 
+              {/* Right: Resumen + acciones */}
               <div className="lg:col-span-5">
                 <div className="rounded-2xl border border-white/10 bg-black/25 p-5">
                   <div className="text-sm text-white/60">Resumen</div>
-                  <div className="mt-2 text-lg font-semibold text-white">{selectedService.name}</div>
+
+                  <div className="mt-2 text-lg font-semibold text-white">
+                    {selectedService.name}
+                  </div>
                   <div className="mt-1 text-sm text-white/70">
                     {formatUYU(selectedService.price)} · {selectedService.durationMin} min
                   </div>
 
                   <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="text-xs text-white/55">Turno</div>
-                    <div className="mt-1 text-sm text-white/85">
-                      {date ? date.toLocaleDateString("es-UY") : "—"} · {time ?? "—"}
+                    <div className="text-xs text-white/55">Cliente</div>
+                    <div className="mt-1 text-sm text-white/85">{clientName || "—"}</div>
+                    <div className="mt-1 text-sm text-white/70">
+                      +598 {phone || "—"}
                     </div>
                   </div>
 
                   <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <div className="text-xs text-white/55">Seña a pagar (10%)</div>
-                    <div className="mt-1 text-2xl font-semibold">{formatUYU(deposit)}</div>
-                    <div className="mt-2 text-xs text-white/55">Esto es una demo: no se procesa ningún pago real.</div>
+                    <div className="text-xs text-white/55">Turno</div>
+                    <div className="mt-1 text-sm text-white/85">{formattedTurno}</div>
                   </div>
 
+                  {designPreview && (
+                    <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                      <div className="text-xs text-white/55">Diseño</div>
+                      <div className="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-black/30">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={designPreview}
+                          alt="Vista previa del diseño"
+                          className="h-44 w-full object-cover"
+                        />
+                      </div>
+                      <div className="mt-2 text-[11px] text-white/55">
+                        Vista previa local (demo).
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                    <CardBrandRow />
+                    <div className="text-xs text-white/55">Política</div>
+                    <div className="mt-1 text-xs text-white/60">
+                      En producción, se pueden definir reglas (por ejemplo, reagendar hasta 12 h antes) y gestionar cambios desde un panel.
+                    </div>
                   </div>
 
                   <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -828,15 +882,15 @@ export default function CrearReservaPage() {
 
                     <button
                       type="button"
-                      disabled={!canPay || paid}
-                      onClick={() => setPaid(true)}
+                      disabled={!canConfirm}
+                      onClick={() => setConfirmed(true)}
                       className={cn(
                         "h-12 rounded-2xl font-semibold transition",
                         "bg-white text-black hover:bg-white/90",
                         "disabled:opacity-50 disabled:cursor-not-allowed"
                       )}
                     >
-                      {paid ? "Confirmado" : "Pagar y confirmar"}
+                      {confirmed ? "Confirmada" : "Confirmar reserva"}
                     </button>
                   </div>
 

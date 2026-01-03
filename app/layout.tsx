@@ -30,7 +30,7 @@ export default function RootLayout({
 
 export const metadata = {
   openGraph: {
-    title: "Nails by Anto Figueroa",
+    title: "Nails Demo",
     description: "Reservá tu turno online de forma rápida y sencilla",
     icons: {
     icon: "/favicon.svg",
@@ -40,7 +40,7 @@ export const metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Nails Anto Figueroa",
+        alt: "Nails Demo",
       },
     ],
     type: "website",

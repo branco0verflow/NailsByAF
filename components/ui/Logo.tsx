@@ -6,7 +6,7 @@ export function Logo() {
       <div className="relative w-[540px] sm:w-[500px] aspect-[3/1]">
 
         <Image
-          src="/logo11.png"
+          src="/logo111.png"
           alt="Nails Anto Figueroa"
           fill
           priority
